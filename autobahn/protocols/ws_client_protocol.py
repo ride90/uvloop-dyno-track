@@ -25,17 +25,15 @@ class WSClientProtocol(WebSocketClientProtocol):
     def onOpen(self):
         self._print('ws connection opened.')
 
+        msg_bin = json.dumps(
+            {
+                'client_id': id(self),
+                'message': 'Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.'
+            }
+        ).encode('utf8')
+
         for _ in range(CLIENTS_MSGS_COUNT):
-            # yes, let's create message each time :)
-            self.sendMessage(
-                json.dumps(
-                    {
-                        'client_id': id(self),
-                        'message': 'Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.' * 100
-                    }
-                ).encode('utf8'),
-                isBinary=True
-            )
+            self.sendMessage(msg_bin, isBinary=True)
 
     def onMessage(self, payload, is_binary):
         if is_binary:
